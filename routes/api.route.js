@@ -12,6 +12,7 @@ const client = new Twitter({
   access_token_secret: process.env.ACCESS_TOKEN_SECRET,
 });
 
+
 router.get("/user", async (req, res, next) => {
   const username = req.query.username;
   const url = `2/users/by?usernames=${username}&user.fields=description%2Cprofile_image_url`;
@@ -22,9 +23,19 @@ router.get("/user", async (req, res, next) => {
       .get(`${base_url}${url}`, {})
       .catch((err) => console.log(err));
     if (!user) {
-      res.status(404).json({ message: "user not found" });
+      return res.status(404).json({ message: "user not found" });
     }
-    res.send(user);
+
+    const userId = user.data[0].id
+
+    const urlTweets = `2/users/${userId}/tweets`;
+
+    const twittes = await client
+      .get(`${base_url}${urlTweets}`, {})
+      .catch((err) => console.log(err));
+
+
+    res.send(twittes);
   } catch (err) {
     res.status(404).json({ message: "user not found" });
   }

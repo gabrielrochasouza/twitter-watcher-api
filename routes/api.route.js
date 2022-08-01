@@ -35,7 +35,7 @@ router.get("/user", async (req, res, next) => {
       .catch((err) => console.log(err));
 
 
-    res.send(twittes);
+    res.send({ userdata: user.data[0],...twittes});
   } catch (err) {
     res.status(404).json({ message: "user not found" });
   }
